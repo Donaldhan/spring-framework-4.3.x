@@ -84,6 +84,10 @@ class Tokenizer {
 	}
 
 
+	/**
+	 * 解析el表达式
+	 * @return
+	 */
 	public List<Token> process() {
 		while (this.pos < this.max) {
 			char ch = this.charsToProcess[this.pos];

@@ -93,10 +93,11 @@ class InternalSpelExpressionParser extends TemplateAwareExpressionParser {
 	// For rules that build nodes, they are stacked here for return
 	private final Stack<SpelNodeImpl> constructedNodes = new Stack<SpelNodeImpl>();
 
-	// The expression being parsed
+	// The expression being parsed 需要解析的表达式
 	private String expressionString;
 
 	// The token stream constructed from that expression string
+	//表达式token
 	private List<Token> tokenStream;
 
 	// length of a populated token stream
@@ -120,15 +121,18 @@ class InternalSpelExpressionParser extends TemplateAwareExpressionParser {
 		try {
 			this.expressionString = expressionString;
 			Tokenizer tokenizer = new Tokenizer(expressionString);
+			//解析表达式
 			this.tokenStream = tokenizer.process();
 			this.tokenStreamLength = this.tokenStream.size();
 			this.tokenStreamPointer = 0;
 			this.constructedNodes.clear();
+			//创建抽象语法树
 			SpelNodeImpl ast = eatExpression();
 			if (moreTokens()) {
 				throw new SpelParseException(peekToken().startPos, SpelMessage.MORE_INPUT, toString(nextToken()));
 			}
 			Assert.isTrue(this.constructedNodes.isEmpty(), "At least one node expected");
+			//构造表示
 			return new SpelExpression(expressionString, ast, this.configuration);
 		}
 		catch (InternalParseException ex) {

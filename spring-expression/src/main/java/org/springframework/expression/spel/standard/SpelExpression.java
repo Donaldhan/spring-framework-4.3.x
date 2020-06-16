@@ -38,7 +38,9 @@ import org.springframework.util.Assert;
  * evaluated in a specified context. An expression can be evaluated standalone or in a
  * specified context. During expression evaluation the context may be asked to resolve
  * references to types, beans, properties, and methods.
- *
+ * 准备根据给定的上下文解析的el表示。一个表达式通过单独的或者一个特殊的上下文进行评估。使用上下文评估对应的类型
+ * bean，属性，和方法
+ * ，
  * @author Andy Clement
  * @author Juergen Hoeller
  * @since 3.0
@@ -52,8 +54,14 @@ public class SpelExpression implements Expression {
 	private static final int FAILED_ATTEMPTS_THRESHOLD = 100;
 
 
+	/**
+	 * 表达式
+	 */
 	private final String expression;
 
+	/**
+	 * el抽象预发树
+	 */
 	private final SpelNodeImpl ast;
 
 	private final SpelParserConfiguration configuration;
@@ -227,7 +235,7 @@ public class SpelExpression implements Expression {
 				}
 			}
 		}
-
+       //根据评估上下文，跟对象的类型，及配置构造状态表达式
 		ExpressionState expressionState =
 				new ExpressionState(getEvaluationContext(), toTypedValue(rootObject), this.configuration);
 		TypedValue typedResultValue = this.ast.getTypedValue(expressionState);
@@ -292,10 +300,12 @@ public class SpelExpression implements Expression {
 				}
 			}
 		}
-
+		//根据评估上下文，跟对象的类型，及配置构造状态表达式
 		ExpressionState expressionState = new ExpressionState(context, this.configuration);
 		TypedValue typedResultValue = this.ast.getTypedValue(expressionState);
+		//编译检查
 		checkCompile(expressionState);
+		//
 		return ExpressionUtils.convertTypedValue(context, typedResultValue, expectedResultType);
 	}
 

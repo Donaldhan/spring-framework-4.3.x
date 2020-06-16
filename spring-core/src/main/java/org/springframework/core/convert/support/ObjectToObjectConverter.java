@@ -55,7 +55,7 @@ import org.springframework.util.ReflectionUtils;
  * {@link Object#toString()} method for converting from a {@code sourceType}
  * to {@code java.lang.String}. For {@code toString()} support, use
  * {@link FallbackObjectToStringConverter} instead.
- *
+ * 对象转换器
  * @author Keith Donald
  * @author Juergen Hoeller
  * @author Sam Brannen
@@ -87,10 +87,12 @@ final class ObjectToObjectConverter implements ConditionalGenericConverter {
 		}
 		Class<?> sourceClass = sourceType.getType();
 		Class<?> targetClass = targetType.getType();
+		//从目标类，获取元类型的成员
 		Member member = getValidatedMember(targetClass, sourceClass);
 
 		try {
 			if (member instanceof Method) {
+				//对应方法
 				Method method = (Method) member;
 				ReflectionUtils.makeAccessible(method);
 				if (!Modifier.isStatic(method.getModifiers())) {
@@ -101,6 +103,7 @@ final class ObjectToObjectConverter implements ConditionalGenericConverter {
 				}
 			}
 			else if (member instanceof Constructor) {
+				//构造函数
 				Constructor<?> ctor = (Constructor<?>) member;
 				ReflectionUtils.makeAccessible(ctor);
 				return ctor.newInstance(source);
