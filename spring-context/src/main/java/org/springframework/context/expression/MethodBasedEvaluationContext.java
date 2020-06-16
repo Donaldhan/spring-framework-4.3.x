@@ -26,8 +26,9 @@ import org.springframework.util.ObjectUtils;
 /**
  * A method-based {@link org.springframework.expression.EvaluationContext} that
  * provides explicit support for method-based invocations.
- *
+ *  方法调用的评估上下文
  * <p>Expose the actual method arguments using the following aliases:
+ *  使用如下方式暴露实际的方法参数
  * <ol>
  * <li>pX where X is the index of the argument (p0 for the first argument)</li>
  * <li>aX where X is the index of the argument (a1 for the second argument)</li>
@@ -61,6 +62,7 @@ public class MethodBasedEvaluationContext extends StandardEvaluationContext {
 
 	@Override
 	public Object lookupVariable(String name) {
+		//获取属性值
 		Object variable = super.lookupVariable(name);
 		if (variable != null) {
 			return variable;

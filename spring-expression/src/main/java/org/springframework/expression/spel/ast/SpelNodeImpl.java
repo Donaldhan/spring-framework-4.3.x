@@ -130,10 +130,12 @@ public abstract class SpelNodeImpl implements SpelNode, Opcodes {
 	@Override
 	public final Object getValue(ExpressionState expressionState) throws EvaluationException {
 		if (expressionState != null) {
+			//获取表达式内部状态值
 			return getValueInternal(expressionState).getValue();
 		}
 		else {
 			// configuration not set - does that matter?
+			//使用标准评估上下文构造表达式状态，进行解析
 			return getValue(new ExpressionState(new StandardEvaluationContext()));
 		}
 	}

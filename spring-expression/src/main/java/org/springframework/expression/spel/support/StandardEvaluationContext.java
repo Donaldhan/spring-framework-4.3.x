@@ -209,6 +209,7 @@ public class StandardEvaluationContext implements EvaluationContext {
 
 	@Override
 	public void setVariable(String name, Object value) {
+		//设置定的属性值
 		this.variables.put(name, value);
 	}
 
@@ -216,12 +217,18 @@ public class StandardEvaluationContext implements EvaluationContext {
 		this.variables.putAll(variables);
 	}
 
+	/**
+	 * 注册属性方法
+	 * @param name
+	 * @param method
+	 */
 	public void registerFunction(String name, Method method) {
 		this.variables.put(name, method);
 	}
 
 	@Override
 	public Object lookupVariable(String name) {
+		//查找对应的属性值
 		return this.variables.get(name);
 	}
 

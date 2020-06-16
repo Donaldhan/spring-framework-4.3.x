@@ -23,7 +23,7 @@ import org.springframework.expression.spel.ExpressionState;
 /**
  * Represents assignment. An alternative to calling setValue() for an expression is to use
  * an assign.
- *
+ * 赋值表达式
  * <p>Example: 'someNumberProperty=42'
  *
  * @author Andy Clement

@@ -46,7 +46,7 @@ import org.springframework.util.StringUtils;
 /**
  * Simple {@link PropertyAccessor} that uses reflection to access properties
  * for reading and writing.
- *
+ * 简单的属性访问器，使用反射访问对应的属性
  * <p>A property can be accessed through a public getter method (when being read)
  * or a public setter method (when being written), and also as a public field.
  *
@@ -94,6 +94,7 @@ public class ReflectivePropertyAccessor implements PropertyAccessor {
 		if (target == null) {
 			return false;
 		}
+		//获取目标类型
 		Class<?> type = (target instanceof Class ? (Class<?>) target : target.getClass());
 		if (type.isArray() && name.equals("length")) {
 			return true;
@@ -102,6 +103,7 @@ public class ReflectivePropertyAccessor implements PropertyAccessor {
 		if (this.readerCache.containsKey(cacheKey)) {
 			return true;
 		}
+		//从目标对象获取属性的get和set方法
 		Method method = findGetterForProperty(name, type, target);
 		if (method != null) {
 			// Treat it like a property...
@@ -113,6 +115,7 @@ public class ReflectivePropertyAccessor implements PropertyAccessor {
 			return true;
 		}
 		else {
+			//获取给定类型的对应类型的属性Field
 			Field field = findField(name, type, target);
 			if (field != null) {
 				TypeDescriptor typeDescriptor = new TypeDescriptor(field);
@@ -133,6 +136,7 @@ public class ReflectivePropertyAccessor implements PropertyAccessor {
 		if (target == null) {
 			throw new AccessException("Cannot read property of null target");
 		}
+		//获取目标类型
 		Class<?> type = (target instanceof Class ? (Class<?>) target : target.getClass());
 
 		if (type.isArray() && name.equals("length")) {
@@ -147,6 +151,7 @@ public class ReflectivePropertyAccessor implements PropertyAccessor {
 		lastReadInvokerPair = invoker;
 
 		if (invoker == null || invoker.member instanceof Method) {
+			//属性对应的为方法的话，直接调用妈目标对象的方法
 			Method method = (Method) (invoker != null ? invoker.member : null);
 			if (method == null) {
 				method = findGetterForProperty(name, type, target);
@@ -172,7 +177,7 @@ public class ReflectivePropertyAccessor implements PropertyAccessor {
 				}
 			}
 		}
-
+        //如果属性定的为Filed值直接访问对应的属性值
 		if (invoker == null || invoker.member instanceof Field) {
 			Field field = (Field) (invoker == null ? null : invoker.member);
 			if (field == null) {
@@ -322,6 +327,13 @@ public class ReflectivePropertyAccessor implements PropertyAccessor {
 		return typeDescriptor;
 	}
 
+	/**
+	 * 从目标对象获取属性的get和set方法
+	 * @param propertyName
+	 * @param clazz
+	 * @param target
+	 * @return
+	 */
 	private Method findGetterForProperty(String propertyName, Class<?> clazz, Object target) {
 		Method method = findGetterForProperty(propertyName, clazz, target instanceof Class);
 		if (method == null && target instanceof Class) {
@@ -330,6 +342,12 @@ public class ReflectivePropertyAccessor implements PropertyAccessor {
 		return method;
 	}
 
+	/**
+	 * @param propertyName
+	 * @param clazz
+	 * @param target
+	 * @return
+	 */
 	private Method findSetterForProperty(String propertyName, Class<?> clazz, Object target) {
 		Method method = findSetterForProperty(propertyName, clazz, target instanceof Class);
 		if (method == null && target instanceof Class) {
@@ -338,6 +356,12 @@ public class ReflectivePropertyAccessor implements PropertyAccessor {
 		return method;
 	}
 
+	/**
+	 * @param name
+	 * @param clazz
+	 * @param target
+	 * @return
+	 */
 	private Field findField(String name, Class<?> clazz, Object target) {
 		Field field = findField(name, clazz, target instanceof Class);
 		if (field == null && target instanceof Class) {
@@ -348,6 +372,7 @@ public class ReflectivePropertyAccessor implements PropertyAccessor {
 
 	/**
 	 * Find a getter method for the specified property.
+	 * 获取给定的属性的get方法
 	 */
 	protected Method findGetterForProperty(String propertyName, Class<?> clazz, boolean mustBeStatic) {
 		Method method = findMethodForProperty(getPropertyMethodSuffixes(propertyName),
@@ -426,6 +451,7 @@ public class ReflectivePropertyAccessor implements PropertyAccessor {
 
 	/**
 	 * Find a field of a certain name on a specified class.
+	 * 获取给定类型的属性Field
 	 */
 	protected Field findField(String name, Class<?> clazz, boolean mustBeStatic) {
 		Field[] fields = clazz.getFields();

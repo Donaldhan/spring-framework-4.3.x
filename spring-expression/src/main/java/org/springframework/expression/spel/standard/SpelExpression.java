@@ -139,8 +139,9 @@ public class SpelExpression implements Expression {
 				}
 			}
 		}
-
+        //根据评估上下文和配置构造表达式状态
 		ExpressionState expressionState = new ExpressionState(getEvaluationContext(), this.configuration);
+		//从抽象语法树获取表达式的值
 		Object result = this.ast.getValue(expressionState);
 		checkCompile(expressionState);
 		return result;

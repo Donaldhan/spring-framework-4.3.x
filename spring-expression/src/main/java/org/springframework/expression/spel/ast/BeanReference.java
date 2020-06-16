@@ -27,7 +27,7 @@ import org.springframework.expression.spel.SpelMessage;
 /**
  * Represents a bean reference to a type, for example <tt>@foo</tt> or <tt>@'foo.bar'</tt>.
  * For a FactoryBean the syntax <tt>&foo</tt> can be used to access the factory itself.
- * 
+ *  bean引用表达式
  * @author Andy Clement
  */
 public class BeanReference extends SpelNodeImpl {
@@ -45,6 +45,7 @@ public class BeanReference extends SpelNodeImpl {
 
 	@Override
 	public TypedValue getValueInternal(ExpressionState state) throws EvaluationException {
+		//从评估上下文获取bean解决器
 		BeanResolver beanResolver = state.getEvaluationContext().getBeanResolver();
 		if (beanResolver == null) {
 			throw new SpelEvaluationException(
@@ -52,6 +53,7 @@ public class BeanReference extends SpelNodeImpl {
 		}
 
 		try {
+			//包装bean为类型值
 			return new TypedValue(beanResolver.resolve(state.getEvaluationContext(), this.beanName));
 		}
 		catch (AccessException ex) {

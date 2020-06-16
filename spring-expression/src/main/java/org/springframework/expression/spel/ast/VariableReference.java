@@ -28,7 +28,7 @@ import org.springframework.expression.spel.SpelEvaluationException;
 /**
  * Represents a variable reference, eg. #someVar. Note this is different to a *local*
  * variable like $someVar
- *
+ * 值引用el node
  * @author Andy Clement
  * @since 3.0
  */
@@ -57,6 +57,7 @@ public class VariableReference extends SpelNodeImpl {
 		if (this.name.equals(ROOT)) {
 			return new ValueRef.TypedValueHolderValueRef(state.getRootContextObject(),this);
 		}
+		//获取值引用
 		TypedValue result = state.lookupVariable(this.name);
 		// a null value will mean either the value was null or the variable was not found
 		return new VariableRef(this.name,result,state.getEvaluationContext());

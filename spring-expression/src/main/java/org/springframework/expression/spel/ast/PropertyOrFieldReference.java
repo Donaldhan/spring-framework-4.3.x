@@ -37,7 +37,7 @@ import org.springframework.expression.spel.support.ReflectivePropertyAccessor;
 
 /**
  * Represents a simple property or field reference.
- *
+ * 简单属性或者field引用
  * @author Andy Clement
  * @author Juergen Hoeller
  * @author Clark Duplichien
@@ -78,6 +78,7 @@ public class PropertyOrFieldReference extends SpelNodeImpl {
 
 	@Override
 	public TypedValue getValueInternal(ExpressionState state) throws EvaluationException {
+		//从激活的上下文对应获取对应的类型值
 		TypedValue tv = getValueInternal(state.getActiveContextObject(), state.getEvaluationContext(),
 				state.getConfiguration().isAutoGrowNullReferences());
 		PropertyAccessor accessorToUse = this.cachedReadAccessor;
@@ -88,9 +89,16 @@ public class PropertyOrFieldReference extends SpelNodeImpl {
 		return tv;
 	}
 
+	/**
+	 * @param contextObject
+	 * @param evalContext
+	 * @param isAutoGrowNullReferences
+	 * @return
+	 * @throws EvaluationException
+	 */
 	private TypedValue getValueInternal(TypedValue contextObject, EvaluationContext evalContext,
 			boolean isAutoGrowNullReferences) throws EvaluationException {
-
+        //从上下文对象获取对应属性的值
 		TypedValue result = readProperty(contextObject, evalContext, this.name);
 
 		// Dynamically create the objects if the user has requested that optional behavior
@@ -171,12 +179,13 @@ public class PropertyOrFieldReference extends SpelNodeImpl {
 
 	/**
 	 * Attempt to read the named property from the current context object.
+	 * 尝试从当前上下文对象获取name属性
 	 * @return the value of the property
 	 * @throws EvaluationException if any problem accessing the property or it cannot be found
 	 */
 	private TypedValue readProperty(TypedValue contextObject, EvaluationContext evalContext, String name)
 			throws EvaluationException {
-
+        //从上下文获取目标对象
 		Object targetObject = contextObject.getValue();
 		if (targetObject == null && this.nullSafe) {
 			return TypedValue.NULL;
@@ -195,7 +204,7 @@ public class PropertyOrFieldReference extends SpelNodeImpl {
 			}
 			this.cachedReadAccessor = null;
 		}
-
+        //从上下获取潜在的属性解决器
 		List<PropertyAccessor> accessorsToTry =
 				getPropertyAccessorsToTry(contextObject.getValue(), evalContext.getPropertyAccessors());
 		// Go through the accessors that may be able to resolve it. If they are a cacheable accessor then
@@ -205,11 +214,13 @@ public class PropertyOrFieldReference extends SpelNodeImpl {
 			try {
 				for (PropertyAccessor accessor : accessorsToTry) {
 					if (accessor.canRead(evalContext, contextObject.getValue(), name)) {
+						//针对bean属性，通过反射读取对应的属性值
 						if (accessor instanceof ReflectivePropertyAccessor) {
 							accessor = ((ReflectivePropertyAccessor) accessor).createOptimalAccessor(
 									evalContext, contextObject.getValue(), name);
 						}
 						this.cachedReadAccessor = accessor;
+						//属性解决访问定的属性值
 						return accessor.read(evalContext, contextObject.getValue(), name);
 					}
 				}
@@ -304,6 +315,7 @@ public class PropertyOrFieldReference extends SpelNodeImpl {
 	 * and resolvers that name a specific class but it is a supertype of the class we have.
 	 * These are put at the end of the specific resolvers set and will be tried after exactly
 	 * matching accessors but before generic accessors.
+	 * 确定访问给定类型的属性和属性解决器。属性解决器放在一个有序的list中，从list返回匹配的属性解决器。
 	 * @param contextObject the object upon which property access is being attempted
 	 * @return a list of resolvers that should be tried in order to access the property
 	 */

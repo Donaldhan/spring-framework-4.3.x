@@ -27,7 +27,7 @@ import org.springframework.expression.spel.ExpressionState;
 
 /**
  * Represents a reference to a type, for example "T(String)" or "T(com.somewhere.Foo)"
- *
+ * 类型引用
  * @author Andy Clement
  */
 public class TypeReference extends SpelNodeImpl {

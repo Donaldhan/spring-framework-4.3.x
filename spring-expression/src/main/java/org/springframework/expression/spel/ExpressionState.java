@@ -123,6 +123,7 @@ public class ExpressionState {
 	 */
 	public TypedValue getActiveContextObject() {
 		if (CollectionUtils.isEmpty(this.contextObjects)) {
+			//跟对象
 			return this.rootObject;
 		}
 		return this.contextObjects.peek();

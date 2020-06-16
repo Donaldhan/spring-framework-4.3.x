@@ -28,7 +28,7 @@ import org.springframework.expression.spel.support.BooleanTypedValue;
 
 /**
  * Represents the boolean AND operation.
- *
+ * 逻辑and操作
  * @author Andy Clement
  * @author Mark Fisher
  * @author Oliver Becker
