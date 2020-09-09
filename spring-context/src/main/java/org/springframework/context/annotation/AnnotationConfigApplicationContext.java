@@ -29,12 +29,12 @@ import org.springframework.util.Assert;
  * classes using {@code javax.inject} annotations. Allows for registering classes one by
  * one using {@link #register(Class...)} as well as for classpath scanning using
  * {@link #scan(String...)}.
- *
+ *   单例应用上下文。允许通过注册和扫描方法，注册类
  * <p>In case of multiple {@code @Configuration} classes, @{@link Bean} methods defined in
  * later classes will override those defined in earlier classes. This can be leveraged to
  * deliberately override certain bean definitions via an extra {@code @Configuration}
  * class.
- *
+ *  在多配制的情况下，bean已最后定义的bean为准
  * <p>See @{@link Configuration}'s javadoc for usage examples.
  *
  * @author Chris Beams
@@ -150,6 +150,8 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
 	 * Register one or more annotated classes to be processed.
 	 * <p>Note that {@link #refresh()} must be called in order for the context
 	 * to fully process the new classes.
+	 *
+	 * 注册一个或多个被注解的类
 	 * @param annotatedClasses one or more annotated classes,
 	 * e.g. {@link Configuration @Configuration} classes
 	 * @see #scan(String...)
@@ -157,11 +159,13 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
 	 */
 	public void register(Class<?>... annotatedClasses) {
 		Assert.notEmpty(annotatedClasses, "At least one annotated class must be specified");
+		//委托使用注册reader
 		this.reader.register(annotatedClasses);
 	}
 
 	/**
 	 * Perform a scan within the specified base packages.
+	 * 扫描给你定包下的组件
 	 * <p>Note that {@link #refresh()} must be called in order for the context
 	 * to fully process the new classes.
 	 * @param basePackages the packages to check for annotated classes

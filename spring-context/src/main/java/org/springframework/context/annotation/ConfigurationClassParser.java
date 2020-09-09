@@ -81,7 +81,7 @@ import org.springframework.util.StringUtils;
  * {@link ConfigurationClass} objects (parsing a single Configuration class may result in
  * any number of ConfigurationClass objects because one Configuration class may import
  * another using the {@link Import} annotation).
- *
+ * 解析配置bean定义
  * <p>This class helps separate the concern of parsing the structure of a Configuration
  * class from the concern of registering BeanDefinition objects based on the
  * content of that model (with the exception of {@code @ComponentScan} annotations which
@@ -213,6 +213,11 @@ class ConfigurationClassParser {
 	}
 
 
+	/**
+	 * 处理配置类
+	 * @param configClass
+	 * @throws IOException
+	 */
 	protected void processConfigurationClass(ConfigurationClass configClass) throws IOException {
 		if (this.conditionEvaluator.shouldSkip(configClass.getMetadata(), ConfigurationPhase.PARSE_CONFIGURATION)) {
 			return;
