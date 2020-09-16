@@ -37,14 +37,16 @@ import org.springframework.util.StringUtils;
 
 /**
  * General purpose factory loading mechanism for internal use within the framework.
- *
+ * 框架内部使用的bean工厂加载机制。
  * <p>{@code SpringFactoriesLoader} {@linkplain #loadFactories loads} and instantiates
  * factories of a given type from {@value #FACTORIES_RESOURCE_LOCATION} files which
  * may be present in multiple JAR files in the classpath. The {@code spring.factories}
  * file must be in {@link Properties} format, where the key is the fully qualified
  * name of the interface or abstract class, and the value is a comma-separated list of
  * implementation class names. For example:
- *
+ *  SpringFactoriesLoader加载bean工厂，并从给定的FACTORIES_RESOURCE_LOCATION文件中，初始化
+ *  bean工厂实例，FACTORIES_RESOURCE_LOCATION文件可能存在多个jar中。spring.factories文件必须以属性
+ *  格式定义工厂，可以为全限定接口或抽象类的name，值为实现类的类名，多个以逗号隔开。
  * <pre class="code">example.MyService=example.MyServiceImpl1,example.MyServiceImpl2</pre>
  *
  * where {@code example.MyService} is the name of the interface, and {@code MyServiceImpl1}
@@ -62,6 +64,7 @@ public abstract class SpringFactoriesLoader {
 	/**
 	 * The location to look for factories.
 	 * <p>Can be present in multiple JAR files.
+	 * bean工厂的位置，可以放到多个jar中
 	 */
 	public static final String FACTORIES_RESOURCE_LOCATION = "META-INF/spring.factories";
 
@@ -69,6 +72,7 @@ public abstract class SpringFactoriesLoader {
 	/**
 	 * Load and instantiate the factory implementations of the given type from
 	 * {@value #FACTORIES_RESOURCE_LOCATION}, using the given class loader.
+	 * 使用给定类加载器，加载工厂资源的实现类，并初始化。
 	 * <p>The returned factories are sorted in accordance with the {@link AnnotationAwareOrderComparator}.
 	 * <p>If a custom instantiation strategy is required, use {@link #loadFactoryNames}
 	 * to obtain all registered factory names.
@@ -82,16 +86,20 @@ public abstract class SpringFactoriesLoader {
 		Assert.notNull(factoryClass, "'factoryClass' must not be null");
 		ClassLoader classLoaderToUse = classLoader;
 		if (classLoaderToUse == null) {
+			//如果类加载器为空，则使用SpringFactoriesLoader的类加载器
 			classLoaderToUse = SpringFactoriesLoader.class.getClassLoader();
 		}
+		//从给定的工厂资源位置，加载定义接口或或抽象类实现类的全限定名
 		List<String> factoryNames = loadFactoryNames(factoryClass, classLoaderToUse);
 		if (logger.isTraceEnabled()) {
 			logger.trace("Loaded [" + factoryClass.getName() + "] names: " + factoryNames);
 		}
 		List<T> result = new ArrayList<T>(factoryNames.size());
 		for (String factoryName : factoryNames) {
+			//初始化工厂
 			result.add(instantiateFactory(factoryName, factoryClass, classLoaderToUse));
 		}
+		//排序
 		AnnotationAwareOrderComparator.sort(result);
 		return result;
 	}
@@ -100,6 +108,7 @@ public abstract class SpringFactoriesLoader {
 	 * Load the fully qualified class names of factory implementations of the
 	 * given type from {@value #FACTORIES_RESOURCE_LOCATION}, using the given
 	 * class loader.
+	 * 从给定的工厂资源位置，加载定义接口或或抽象类实现类的全限定名
 	 * @param factoryClass the interface or abstract class representing the factory
 	 * @param classLoader the ClassLoader to use for loading resources; can be
 	 * {@code null} to use the default
@@ -126,6 +135,14 @@ public abstract class SpringFactoriesLoader {
 		}
 	}
 
+	/**
+	 * 创建bean工厂
+	 * @param instanceClassName
+	 * @param factoryClass
+	 * @param classLoader
+	 * @param <T>
+	 * @return
+	 */
 	@SuppressWarnings("unchecked")
 	private static <T> T instantiateFactory(String instanceClassName, Class<T> factoryClass, ClassLoader classLoader) {
 		try {
