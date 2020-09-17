@@ -50,6 +50,7 @@ public interface ImportSelector {
 	/**
 	 * Select and return the names of which class(es) should be imported based on
 	 * the {@link AnnotationMetadata} of the importing @{@link Configuration} class.
+	 * 选择基于配置注解的类名，并返回
 	 */
 	String[] selectImports(AnnotationMetadata importingClassMetadata);
 
