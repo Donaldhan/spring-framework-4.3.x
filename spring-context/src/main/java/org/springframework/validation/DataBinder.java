@@ -57,6 +57,9 @@ import org.springframework.util.StringUtils;
  * The binding process can be customized through specifying allowed fields,
  * required fields, custom editors, etc.
  *
+ * 允许设置目标对象属性的绑定器，包括绑定结果的分析和校验。通过特殊的允许字段，需要字段，通用编辑器
+ * 定制绑定过程
+ *
  * <p>Note that there are potential security implications in failing to set an array
  * of allowed fields. In the case of HTTP form POST data for example, malicious clients
  * can attempt to subvert an application by supplying values for fields or properties
@@ -64,12 +67,15 @@ import org.springframework.util.StringUtils;
  * set on command objects <i>or their nested objects</i>. For this reason, it is
  * <b>highly recommended to specify the {@link #setAllowedFields allowedFields} property</b>
  * on the DataBinder.
+ * 需要注意的是，设置允许设置的字段失败时，存在潜在的安全隐患。在HTTP表单提交，恶意的应用尝试，提供在表单中不存在的
+ * 字段或属性，已达到破坏应用的目的。在一些情形下，一些命令对象或嵌入式的对象，将会被设置非法数据。由于设置原因
+ * 强烈推荐，使用DataBinder设置可以访问字段属性。
  *
  * <p>The binding results can be examined via the {@link BindingResult} interface,
  * extending the {@link Errors} interface: see the {@link #getBindingResult()} method.
  * Missing fields and property access exceptions will be converted to {@link FieldError FieldErrors},
  * collected in the Errors instance, using the following error codes:
- *
+ * 可以通过拓展Errors的接口BindingResult检查绑定结果。
  * <ul>
  * <li>Missing field error: "required"
  * <li>Type mismatch error: "typeMismatch"
@@ -80,6 +86,7 @@ import org.springframework.util.StringUtils;
  * strategy, processing for missing fields and property access exceptions: see the
  * {@link #setBindingErrorProcessor} method. You can override the default strategy
  * if needed, for example to generate different error codes.
+ * 默认，绑定结果通过BindingErrorProcessor解决。
  *
  * <p>Custom validation errors can be added afterwards. You will typically want to resolve
  * such error codes into proper user-visible error messages; this can be achieved through
@@ -89,7 +96,7 @@ import org.springframework.util.StringUtils;
  * method. The list of message codes can be customized through the {@link MessageCodesResolver}
  * strategy: see the {@link #setMessageCodesResolver} method. {@link DefaultMessageCodesResolver}'s
  * javadoc states details on the default resolution rules.
- *
+ * 一般的错误校验，可以在后面添加。你可以通过MessageSource解决一些用户可见的错误信息
  * <p>This generic data binder can be used in any kind of environment.
  * It is typically used by Spring web MVC controllers, via the web-specific
  * subclasses {@link org.springframework.web.bind.ServletRequestDataBinder}
@@ -432,6 +439,7 @@ public class DataBinder implements PropertyEditorRegistry, TypeConverter {
 	 * Register fields that should be allowed for binding. Default is all
 	 * fields. Restrict this for example to avoid unwanted modifications
 	 * by malicious users when binding HTTP request parameters.
+	 * 注册允许绑定的注册字段。默认所有字段，限制恶意用户，在绑定http请求参数，避免不想要的修改
 	 * <p>Supports "xxx*", "*xxx" and "*xxx*" patterns. More sophisticated matching
 	 * can be implemented by overriding the {@code isAllowed} method.
 	 * <p>Alternatively, specify a list of <i>disallowed</i> fields.
