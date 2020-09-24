@@ -27,7 +27,7 @@ import org.springframework.util.ClassUtils;
 /**
  * A simple filter which matches classes with a given annotation,
  * checking inherited annotations as well.
- *
+ * 简单的匹配给定注解类的过滤器，同时检查继承的注解。
  * <p>The matching logic mirrors that of {@link java.lang.Class#isAnnotationPresent(Class)}.
  *
  * @author Mark Fisher
