@@ -67,6 +67,7 @@ public class AnnotationBeanNameGenerator implements BeanNameGenerator {
 	@Override
 	public String generateBeanName(BeanDefinition definition, BeanDefinitionRegistry registry) {
 		if (definition instanceof AnnotatedBeanDefinition) {
+			//注解bean，获取注解bean的name
 			String beanName = determineBeanNameFromAnnotation((AnnotatedBeanDefinition) definition);
 			if (StringUtils.hasText(beanName)) {
 				// Explicit bean name found.
@@ -84,11 +85,13 @@ public class AnnotationBeanNameGenerator implements BeanNameGenerator {
 	 */
 	protected String determineBeanNameFromAnnotation(AnnotatedBeanDefinition annotatedDef) {
 		AnnotationMetadata amd = annotatedDef.getMetadata();
+		//获取注解类型
 		Set<String> types = amd.getAnnotationTypes();
 		String beanName = null;
 		for (String type : types) {
 			AnnotationAttributes attributes = AnnotationConfigUtils.attributesFor(amd, type);
 			if (isStereotypeWithNameValue(type, amd.getMetaAnnotationTypes(type), attributes)) {
+				//获取注解的值
 				Object value = attributes.get("value");
 				if (value instanceof String) {
 					String strVal = (String) value;
@@ -137,8 +140,10 @@ public class AnnotationBeanNameGenerator implements BeanNameGenerator {
 
 	/**
 	 * Derive a default bean name from the given bean definition.
+	 * 从而给给定的bean定义，抽取一个默认的bean 名称
 	 * <p>The default implementation simply builds a decapitalized version
 	 * of the short class name: e.g. "mypackage.MyJdbcDao" -> "myJdbcDao".
+	 * 一般为类名。
 	 * <p>Note that inner classes will thus have names of the form
 	 * "outerClassName.InnerClassName", which because of the period in the
 	 * name may be an issue if you are autowiring by name.
@@ -147,6 +152,7 @@ public class AnnotationBeanNameGenerator implements BeanNameGenerator {
 	 */
 	protected String buildDefaultBeanName(BeanDefinition definition) {
 		String shortClassName = ClassUtils.getShortName(definition.getBeanClassName());
+		//获取类名的简称
 		return Introspector.decapitalize(shortClassName);
 	}
 

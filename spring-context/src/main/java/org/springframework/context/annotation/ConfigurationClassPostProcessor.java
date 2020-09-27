@@ -96,7 +96,6 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 	private SourceExtractor sourceExtractor = new PassThroughSourceExtractor();
 
 	private ProblemReporter problemReporter = new FailFastProblemReporter();
-
 	private Environment environment;
 
 	private ResourceLoader resourceLoader = new DefaultResourceLoader();
