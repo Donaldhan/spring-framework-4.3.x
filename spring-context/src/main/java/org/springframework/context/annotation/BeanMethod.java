@@ -23,7 +23,7 @@ import org.springframework.core.type.MethodMetadata;
 /**
  * Represents a {@link Configuration} class method marked with the
  * {@link Bean} annotation.
- *
+ * 表示一个配置方法及的bean定义
  * @author Chris Beams
  * @author Juergen Hoeller
  * @since 3.0

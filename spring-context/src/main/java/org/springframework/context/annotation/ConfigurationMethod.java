@@ -22,6 +22,7 @@ import org.springframework.core.type.MethodMetadata;
 
 /**
  * @author Chris Beams
+ * 配置类方法
  * @since 3.1
  */
 abstract class ConfigurationMethod {

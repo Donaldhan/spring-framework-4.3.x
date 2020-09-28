@@ -64,7 +64,8 @@ import org.springframework.util.ReflectionUtils;
  * implementation if the container actually requests the construction of a new
  * instance. Otherwise, a call to such an {@code @Bean} method serves as a
  * reference back to the container, obtaining the corresponding bean by name.
- *
+ * 为配置的bean方法，通过CGLIB机制，产生一个对应的子类。每个生命的bean方法，在产生的子类中，将会重写，仅仅代理
+ * 实际的bean方法。
  * @author Chris Beams
  * @author Juergen Hoeller
  * @since 3.0

@@ -44,7 +44,7 @@ import org.springframework.util.StringUtils;
 
 /**
  * Parser for the @{@link ComponentScan} annotation.
- *
+ * 解析注解扫描注解
  * @author Chris Beams
  * @author Juergen Hoeller
  * @author Sam Brannen
@@ -73,10 +73,15 @@ class ComponentScanAnnotationParser {
 	}
 
 
+	/**
+	 * @param componentScan
+	 * @param declaringClass
+	 * @return
+	 */
 	public Set<BeanDefinitionHolder> parse(AnnotationAttributes componentScan, final String declaringClass) {
 		Assert.state(this.environment != null, "Environment must not be null");
 		Assert.state(this.resourceLoader != null, "ResourceLoader must not be null");
-
+        //类路径bean定义扫描器
 		ClassPathBeanDefinitionScanner scanner = new ClassPathBeanDefinitionScanner(this.registry,
 				componentScan.getBoolean("useDefaultFilters"), this.environment, this.resourceLoader);
 
@@ -132,6 +137,7 @@ class ComponentScanAnnotationParser {
 				return declaringClass.equals(className);
 			}
 		});
+		//扫描基础包中的资源
 		return scanner.doScan(StringUtils.toStringArray(basePackages));
 	}
 
