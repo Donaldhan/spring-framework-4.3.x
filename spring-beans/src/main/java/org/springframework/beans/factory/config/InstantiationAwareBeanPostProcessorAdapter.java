@@ -27,7 +27,7 @@ import org.springframework.beans.PropertyValues;
  * as no-ops, which will not change normal processing of each bean instantiated
  * by the container. Subclasses may override merely those methods that they are
  * actually interested in.
- *
+ * bean实例后处理器适配器
  * <p>Note that this base class is only recommendable if you actually require
  * {@link InstantiationAwareBeanPostProcessor} functionality. If all you need
  * is plain {@link BeanPostProcessor} functionality, prefer a straight

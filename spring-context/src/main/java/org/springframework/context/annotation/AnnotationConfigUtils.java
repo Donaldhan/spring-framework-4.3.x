@@ -179,7 +179,7 @@ public class AnnotationConfigUtils {
 		}
 
 		// Check for JSR-250 support, and if present add the CommonAnnotationBeanPostProcessor.
-		//https://www.chkui.com/article/spring/spring_core_jsr250_and_resource
+		//https://www.chkui.com/article/spring/spring_core_jsr250_and_resource JSR-250注解后处理器
 		if (jsr250Present && !registry.containsBeanDefinition(COMMON_ANNOTATION_PROCESSOR_BEAN_NAME)) {
 			RootBeanDefinition def = new RootBeanDefinition(CommonAnnotationBeanPostProcessor.class);
 			def.setSource(source);
