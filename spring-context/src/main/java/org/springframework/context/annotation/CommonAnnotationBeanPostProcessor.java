@@ -145,11 +145,18 @@ public class CommonAnnotationBeanPostProcessor extends InitDestroyAnnotationBean
 	// Common Annotations 1.1 Resource.lookup() available? Not present on JDK 6...
 	private static final Method lookupAttribute = ClassUtils.getMethodIfAvailable(Resource.class, "lookup");
 
+	/**
+	 *
+	 */
 	private static Class<? extends Annotation> webServiceRefClass = null;
 
+	/**
+	 *
+	 */
 	private static Class<? extends Annotation> ejbRefClass = null;
 
 	static {
+		//https://www.ibm.com/support/knowledgecenter/zh/SSAW57_8.5.5/com.ibm.websphere.nd.multiplatform.doc/ae/rwbs_jaxwsannotations.html
 		try {
 			@SuppressWarnings("unchecked")
 			Class<? extends Annotation> clazz = (Class<? extends Annotation>)
@@ -159,6 +166,7 @@ public class CommonAnnotationBeanPostProcessor extends InitDestroyAnnotationBean
 		catch (ClassNotFoundException ex) {
 			webServiceRefClass = null;
 		}
+		//https://iowiki.com/ejb/ejb_annotations.html
 		try {
 			@SuppressWarnings("unchecked")
 			Class<? extends Annotation> clazz = (Class<? extends Annotation>)
