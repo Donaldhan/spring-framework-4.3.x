@@ -60,7 +60,8 @@ import org.springframework.util.ReflectionUtils;
  * may be annotated, but it is recommended to only annotate one single
  * init method and destroy method, respectively.
  *
- * <p>Spring's {@link org.springframework.context.annotation.CommonAnnotationBeanPostProcessor}
+ * <p>Spring's
+ * {@see org.springframework.context.annotation.CommonAnnotationBeanPostProcessor}
  * supports the JSR-250 {@link javax.annotation.PostConstruct} and {@link javax.annotation.PreDestroy}
  * annotations out of the box, as init annotation and destroy annotation, respectively.
  * Furthermore, it also supports the {@link javax.annotation.Resource} annotation
@@ -83,6 +84,9 @@ public class InitDestroyAnnotationBeanPostProcessor
 
 	private int order = Ordered.LOWEST_PRECEDENCE;
 
+	/**
+	 * 类的生命周期元信息缓存
+	 */
 	private transient final Map<Class<?>, LifecycleMetadata> lifecycleMetadataCache =
 			new ConcurrentHashMap<Class<?>, LifecycleMetadata>(256);
 
@@ -122,6 +126,7 @@ public class InitDestroyAnnotationBeanPostProcessor
 	@Override
 	public void postProcessMergedBeanDefinition(RootBeanDefinition beanDefinition, Class<?> beanType, String beanName) {
 		if (beanType != null) {
+			//获取类的生命周期元信息
 			LifecycleMetadata metadata = findLifecycleMetadata(beanType);
 			metadata.checkConfigMembers(beanDefinition);
 		}
@@ -131,6 +136,7 @@ public class InitDestroyAnnotationBeanPostProcessor
 	public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
 		LifecycleMetadata metadata = findLifecycleMetadata(bean.getClass());
 		try {
+			//调用初始化方法
 			metadata.invokeInitMethods(bean, beanName);
 		}
 		catch (InvocationTargetException ex) {
@@ -151,6 +157,7 @@ public class InitDestroyAnnotationBeanPostProcessor
 	public void postProcessBeforeDestruction(Object bean, String beanName) throws BeansException {
 		LifecycleMetadata metadata = findLifecycleMetadata(bean.getClass());
 		try {
+			//调用销毁方法
 			metadata.invokeDestroyMethods(bean, beanName);
 		}
 		catch (InvocationTargetException ex) {
@@ -173,6 +180,11 @@ public class InitDestroyAnnotationBeanPostProcessor
 	}
 
 
+	/**
+	 * 获取类的生命周期元信息
+	 * @param clazz
+	 * @return
+	 */
 	private LifecycleMetadata findLifecycleMetadata(Class<?> clazz) {
 		if (this.lifecycleMetadataCache == null) {
 			// Happens after deserialization, during destruction...
@@ -193,6 +205,11 @@ public class InitDestroyAnnotationBeanPostProcessor
 		return metadata;
 	}
 
+	/**
+	 * 构建类的生命周期元数据
+	 * @param clazz
+	 * @return
+	 */
 	private LifecycleMetadata buildLifecycleMetadata(final Class<?> clazz) {
 		final boolean debug = logger.isDebugEnabled();
 		LinkedList<LifecycleElement> initMethods = new LinkedList<LifecycleElement>();
@@ -251,13 +268,23 @@ public class InitDestroyAnnotationBeanPostProcessor
 
 	/**
 	 * Class representing information about annotated init and destroy methods.
+	 * 表示类的初始化销毁注解方法相关信息
 	 */
 	private class LifecycleMetadata {
 
+		/**
+		 * 目标类
+		 */
 		private final Class<?> targetClass;
 
+		/**
+		 * 初始化方法
+		 */
 		private final Collection<LifecycleElement> initMethods;
 
+		/**
+		 * 销毁方法
+		 */
 		private final Collection<LifecycleElement> destroyMethods;
 
 		private volatile Set<LifecycleElement> checkedInitMethods;
@@ -299,6 +326,12 @@ public class InitDestroyAnnotationBeanPostProcessor
 			this.checkedDestroyMethods = checkedDestroyMethods;
 		}
 
+		/**
+		 * 调用初始化方法
+		 * @param target
+		 * @param beanName
+		 * @throws Throwable
+		 */
 		public void invokeInitMethods(Object target, String beanName) throws Throwable {
 			Collection<LifecycleElement> initMethodsToIterate =
 					(this.checkedInitMethods != null ? this.checkedInitMethods : this.initMethods);
@@ -313,6 +346,12 @@ public class InitDestroyAnnotationBeanPostProcessor
 			}
 		}
 
+		/**
+		 * 调用销毁方法
+		 * @param target
+		 * @param beanName
+		 * @throws Throwable
+		 */
 		public void invokeDestroyMethods(Object target, String beanName) throws Throwable {
 			Collection<LifecycleElement> destroyMethodsToUse =
 					(this.checkedDestroyMethods != null ? this.checkedDestroyMethods : this.destroyMethods);
@@ -337,9 +376,13 @@ public class InitDestroyAnnotationBeanPostProcessor
 
 	/**
 	 * Class representing injection information about an annotated method.
+	 * 一个方法注解描述的注解信息
 	 */
 	private static class LifecycleElement {
 
+		/**
+		 * 目标方法
+		 */
 		private final Method method;
 
 		private final String identifier;

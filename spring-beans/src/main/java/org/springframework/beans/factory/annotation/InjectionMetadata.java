@@ -117,7 +117,7 @@ public class InjectionMetadata {
 
 
 	/**
-	 * 是否需要刷新，注入元信息Wie空，或则元信息的目标类非给定类型
+	 * 是否需要刷新，注入元信息为空，或则元信息的目标类非给定类型
 	 * @param metadata
 	 * @param clazz
 	 * @return
@@ -153,6 +153,10 @@ public class InjectionMetadata {
 			return this.member;
 		}
 
+		/**
+		 * 获取依赖资源的类型
+		 * @return
+		 */
 		protected final Class<?> getResourceType() {
 			if (this.isField) {
 				return ((Field) this.member).getType();
@@ -262,7 +266,7 @@ public class InjectionMetadata {
 
 		/**
 		 * Either this or {@link #inject} needs to be overridden.
-		 *
+		 * 获取需要注解的资源，可能为bean，可能为bean元素
 		 */
 		protected Object getResourceToInject(Object target, String requestingBeanName) {
 			return null;

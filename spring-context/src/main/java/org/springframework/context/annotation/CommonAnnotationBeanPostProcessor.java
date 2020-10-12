@@ -292,6 +292,7 @@ public class CommonAnnotationBeanPostProcessor extends InitDestroyAnnotationBean
 
 	@Override
 	public void postProcessMergedBeanDefinition(RootBeanDefinition beanDefinition, Class<?> beanType, String beanName) {
+		//处理bean生命周期的元信息
 		super.postProcessMergedBeanDefinition(beanDefinition, beanType, beanName);
 		if (beanType != null) {
 			InjectionMetadata metadata = findResourceMetadata(beanName, beanType, null);
@@ -312,9 +313,10 @@ public class CommonAnnotationBeanPostProcessor extends InitDestroyAnnotationBean
 	@Override
 	public PropertyValues postProcessPropertyValues(
 			PropertyValues pvs, PropertyDescriptor[] pds, Object bean, String beanName) throws BeansException {
-
+        //获取bean的注入元信息
 		InjectionMetadata metadata = findResourceMetadata(beanName, bean.getClass(), pvs);
 		try {
+			//注入bean的相关属性
 			metadata.inject(bean, beanName, pvs);
 		}
 		catch (Throwable ex) {
@@ -324,6 +326,13 @@ public class CommonAnnotationBeanPostProcessor extends InitDestroyAnnotationBean
 	}
 
 
+	/**
+	 * 获取bean的资源元信息
+	 * @param beanName
+	 * @param clazz
+	 * @param pvs
+	 * @return
+	 */
 	private InjectionMetadata findResourceMetadata(String beanName, final Class<?> clazz, PropertyValues pvs) {
 		// Fall back to class name as cache key, for backwards compatibility with custom callers.
 		String cacheKey = (StringUtils.hasLength(beanName) ? beanName : clazz.getName());
@@ -350,6 +359,10 @@ public class CommonAnnotationBeanPostProcessor extends InitDestroyAnnotationBean
 		return metadata;
 	}
 
+	/**
+	 * @param clazz
+	 * @return
+	 */
 	private InjectionMetadata buildResourceMetadata(final Class<?> clazz) {
 		LinkedList<InjectionMetadata.InjectedElement> elements = new LinkedList<InjectionMetadata.InjectedElement>();
 		Class<?> targetClass = clazz;
@@ -358,6 +371,7 @@ public class CommonAnnotationBeanPostProcessor extends InitDestroyAnnotationBean
 			final LinkedList<InjectionMetadata.InjectedElement> currElements =
 					new LinkedList<InjectionMetadata.InjectedElement>();
 
+			//检查字段级，webService，ejb，resource等注解元信息
 			ReflectionUtils.doWithLocalFields(targetClass, new ReflectionUtils.FieldCallback() {
 				@Override
 				public void doWith(Field field) throws IllegalArgumentException, IllegalAccessException {
@@ -383,7 +397,7 @@ public class CommonAnnotationBeanPostProcessor extends InitDestroyAnnotationBean
 					}
 				}
 			});
-
+			//检查方法级，webService，ejb，resource等注解元信息
 			ReflectionUtils.doWithLocalMethods(targetClass, new ReflectionUtils.MethodCallback() {
 				@Override
 				public void doWith(Method method) throws IllegalArgumentException, IllegalAccessException {
@@ -440,6 +454,7 @@ public class CommonAnnotationBeanPostProcessor extends InitDestroyAnnotationBean
 	/**
 	 * Obtain a lazily resolving resource proxy for the given name and type,
 	 * delegating to {@link #getResource} on demand once a method call comes in.
+	 * 从给bean名称或者类型，获取一个懒加载资源解决代理，在方法调用是，委托给getResource方法
 	 * @param element the descriptor for the annotated field/method
 	 * @param requestingBeanName the name of the requesting bean
 	 * @return the resource object (never {@code null})
@@ -477,6 +492,7 @@ public class CommonAnnotationBeanPostProcessor extends InitDestroyAnnotationBean
 
 	/**
 	 * Obtain the resource object for the given name and type.
+	 * 获取给定名称或类型的资源
 	 * @param element the descriptor for the annotated field/method
 	 * @param requestingBeanName the name of the requesting bean
 	 * @return the resource object (never {@code null})
@@ -499,6 +515,7 @@ public class CommonAnnotationBeanPostProcessor extends InitDestroyAnnotationBean
 	/**
 	 * Obtain a resource object for the given name and type through autowiring
 	 * based on the given factory.
+	 * 基于给定工厂，获取给姓名或类型的自动注解资源
 	 * @param factory the factory to autowire against
 	 * @param element the descriptor for the annotated field/method
 	 * @param requestingBeanName the name of the requesting bean
@@ -519,6 +536,7 @@ public class CommonAnnotationBeanPostProcessor extends InitDestroyAnnotationBean
 					element.getDependencyDescriptor(), requestingBeanName, autowiredBeanNames, null);
 		}
 		else {
+			//从bean工厂，直接获取给定的bean
 			resource = factory.getBean(name, element.lookupType);
 			autowiredBeanNames = Collections.singleton(name);
 		}
@@ -527,6 +545,7 @@ public class CommonAnnotationBeanPostProcessor extends InitDestroyAnnotationBean
 			ConfigurableBeanFactory beanFactory = (ConfigurableBeanFactory) factory;
 			for (String autowiredBeanName : autowiredBeanNames) {
 				if (beanFactory.containsBean(autowiredBeanName)) {
+					//注册依赖bean
 					beanFactory.registerDependentBean(autowiredBeanName, requestingBeanName);
 				}
 			}
@@ -539,6 +558,7 @@ public class CommonAnnotationBeanPostProcessor extends InitDestroyAnnotationBean
 	/**
 	 * Class representing generic injection information about an annotated field
 	 * or setter method, supporting @Resource and related annotations.
+	 * 表述一个注解字段或set方法的注解信息，直接@Resource注解和相关注解
 	 */
 	protected abstract class LookupElement extends InjectionMetadata.InjectedElement {
 
@@ -617,6 +637,7 @@ public class CommonAnnotationBeanPostProcessor extends InitDestroyAnnotationBean
 			String lookupValue = (lookupAttribute != null ?
 					(String) ReflectionUtils.invokeMethod(lookupAttribute, resource) : null);
 			this.mappedName = (StringUtils.hasLength(lookupValue) ? lookupValue : resource.mappedName());
+			//处理懒加载
 			Lazy lazy = ae.getAnnotation(Lazy.class);
 			this.lazyLookup = (lazy != null && lazy.value());
 		}
@@ -632,6 +653,7 @@ public class CommonAnnotationBeanPostProcessor extends InitDestroyAnnotationBean
 	/**
 	 * Class representing injection information about an annotated field
 	 * or setter method, supporting the @WebServiceRef annotation.
+	 * webservice注解方法
 	 */
 	private class WebServiceRefElement extends LookupElement {
 
@@ -648,6 +670,7 @@ public class CommonAnnotationBeanPostProcessor extends InitDestroyAnnotationBean
 			if (this.isDefaultName) {
 				resourceName = this.member.getName();
 				if (this.member instanceof Method && resourceName.startsWith("set") && resourceName.length() > 3) {
+					//如果是set方法，获取内省的资源命名
 					resourceName = Introspector.decapitalize(resourceName.substring(3));
 				}
 			}
