@@ -27,7 +27,7 @@ import org.springframework.core.annotation.AliasFor;
 
 /**
  * Annotation that marks a method as a listener for application events.
- *
+ * 标注一个方法为应用事件监听器方法
  * <p>If an annotated method supports a single event type, the method may
  * declare a single parameter that reflects the event type to listen to.
  * If an annotated method supports multiple event types, this annotation

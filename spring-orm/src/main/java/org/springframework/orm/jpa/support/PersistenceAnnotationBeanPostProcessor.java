@@ -351,6 +351,7 @@ public class PersistenceAnnotationBeanPostProcessor
 
 		InjectionMetadata metadata = findPersistenceMetadata(beanName, bean.getClass(), pvs);
 		try {
+			//注入持久化依赖
 			metadata.inject(bean, beanName, pvs);
 		}
 		catch (Throwable ex) {
@@ -381,6 +382,13 @@ public class PersistenceAnnotationBeanPostProcessor
 	}
 
 
+	/**
+	 * 获取持久化注入元数据
+	 * @param beanName
+	 * @param clazz
+	 * @param pvs
+	 * @return
+	 */
 	private InjectionMetadata findPersistenceMetadata(String beanName, final Class<?> clazz, PropertyValues pvs) {
 		// Fall back to class name as cache key, for backwards compatibility with custom callers.
 		String cacheKey = (StringUtils.hasLength(beanName) ? beanName : clazz.getName());
@@ -407,6 +415,11 @@ public class PersistenceAnnotationBeanPostProcessor
 		return metadata;
 	}
 
+	/**
+	 * 构建类型的持久化元数据
+	 * @param clazz
+	 * @return
+	 */
 	private InjectionMetadata buildPersistenceMetadata(final Class<?> clazz) {
 		LinkedList<InjectionMetadata.InjectedElement> elements = new LinkedList<InjectionMetadata.InjectedElement>();
 		Class<?> targetClass = clazz;
@@ -414,7 +427,7 @@ public class PersistenceAnnotationBeanPostProcessor
 		do {
 			final LinkedList<InjectionMetadata.InjectedElement> currElements =
 					new LinkedList<InjectionMetadata.InjectedElement>();
-
+            //字段级
 			ReflectionUtils.doWithLocalFields(targetClass, new ReflectionUtils.FieldCallback() {
 				@Override
 				public void doWith(Field field) throws IllegalArgumentException, IllegalAccessException {
@@ -427,7 +440,7 @@ public class PersistenceAnnotationBeanPostProcessor
 					}
 				}
 			});
-
+            //方法级
 			ReflectionUtils.doWithLocalMethods(targetClass, new ReflectionUtils.MethodCallback() {
 				@Override
 				public void doWith(Method method) throws IllegalArgumentException, IllegalAccessException {

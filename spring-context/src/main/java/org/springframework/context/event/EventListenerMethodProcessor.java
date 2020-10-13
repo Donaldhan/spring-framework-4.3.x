@@ -46,7 +46,7 @@ import org.springframework.util.CollectionUtils;
 /**
  * Register {@link EventListener} annotated method as individual {@link ApplicationListener}
  * instances.
- *
+ * 注册时间监听器注解方法为应用监听器实例
  * @author Stephane Nicoll
  * @author Juergen Hoeller
  * @since 4.2
@@ -115,6 +115,7 @@ public class EventListenerMethodProcessor implements SmartInitializingSingleton,
 	/**
 	 * Return the {@link EventListenerFactory} instances to use to handle
 	 * {@link EventListener} annotated methods.
+	 * 返回事件监听器工厂
 	 */
 	protected List<EventListenerFactory> getEventListenerFactories() {
 		Map<String, EventListenerFactory> beans = this.applicationContext.getBeansOfType(EventListenerFactory.class);
@@ -123,10 +124,16 @@ public class EventListenerMethodProcessor implements SmartInitializingSingleton,
 		return factories;
 	}
 
+	/**
+	 * @param factories
+	 * @param beanName
+	 * @param targetType
+	 */
 	protected void processBean(final List<EventListenerFactory> factories, final String beanName, final Class<?> targetType) {
 		if (!this.nonAnnotatedClasses.contains(targetType)) {
 			Map<Method, EventListener> annotatedMethods = null;
 			try {
+				//获取方法及事件监听
 				annotatedMethods = MethodIntrospector.selectMethods(targetType,
 						new MethodIntrospector.MetadataLookup<EventListener>() {
 							@Override
@@ -148,7 +155,7 @@ public class EventListenerMethodProcessor implements SmartInitializingSingleton,
 				}
 			}
 			else {
-				// Non-empty set of methods
+				// Non-empty set of methods， 将事件监听器方法，包装成应用监听器
 				for (Method method : annotatedMethods.keySet()) {
 					for (EventListenerFactory factory : factories) {
 						if (factory.supportsMethod(method)) {

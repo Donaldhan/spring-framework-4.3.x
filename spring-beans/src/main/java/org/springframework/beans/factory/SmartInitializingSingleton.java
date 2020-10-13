@@ -48,6 +48,7 @@ public interface SmartInitializingSingleton {
 	 * with a guarantee that all regular singleton beans have been created
 	 * already. {@link ListableBeanFactory#getBeansOfType} calls within
 	 * this method won't trigger accidental side effects during bootstrap.
+	 * 再单例与初始化节点调用，保证所有的单例bean已经闯将
 	 * <p><b>NOTE:</b> This callback won't be triggered for singleton beans
 	 * lazily initialized on demand after {@link BeanFactory} bootstrap,
 	 * and not for any other bean scope either. Carefully use it for beans

@@ -65,8 +65,14 @@ public class ApplicationListenerMethodAdapter implements GenericApplicationListe
 
 	private final Method method;
 
+	/**
+	 * 目标类
+	 */
 	private final Class<?> targetClass;
 
+	/**
+	 * 目标方法
+	 */
 	private final Method bridgedMethod;
 
 	private final List<ResolvableType> declaredEventTypes;
@@ -170,6 +176,7 @@ public class ApplicationListenerMethodAdapter implements GenericApplicationListe
 	/**
 	 * Process the specified {@link ApplicationEvent}, checking if the condition
 	 * match and handling non-null result, if any.
+	 * 处理事件
 	 */
 	public void processEvent(ApplicationEvent event) {
 		Object[] args = resolveArguments(event);
@@ -248,6 +255,7 @@ public class ApplicationListenerMethodAdapter implements GenericApplicationListe
 
 	/**
 	 * Invoke the event listener method with the given argument values.
+	 * 调用实际事件处理方法
 	 */
 	protected Object doInvoke(Object... args) {
 		Object bean = getTargetBean();
