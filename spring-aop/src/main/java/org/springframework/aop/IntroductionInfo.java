@@ -18,7 +18,7 @@ package org.springframework.aop;
 
 /**
  * Interface supplying the information necessary to describe an introduction.
- *
+ * aop 增强信息接口
  * <p>{@link IntroductionAdvisor IntroductionAdvisors} must implement this
  * interface. If an {@link org.aopalliance.aop.Advice} implements this,
  * it may be used as an introduction without an {@link IntroductionAdvisor}.
